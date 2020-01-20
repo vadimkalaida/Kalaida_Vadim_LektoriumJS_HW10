@@ -14,71 +14,75 @@ const FormComponentFunc: React.FC = () => {
   const [passwordConfirmError, setPasswordConfirmError] : React.ComponentState = useState('');
   const [errorBlockForm, setErrorBlockForm] : React.ComponentState = useState('errorBlockForm');
   const informationArr : Array<object> = [];
+  const emailTestString : RegExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const testLetters : RegExp = /[a-zA-Z]/;
+  const testNumbers : RegExp = /[0-9]/;
 
   function onChangeUsername(event : any) {
     setUsername(event.target.value);
   }
 
   useEffect(() => {
-    if(username.length < 4 || username.length > 16){
+    if(username.length < 4 || username.length > 16) {
       setUsernameError('Username length should be 4 - 16');
       setErrorBlockForm('errorBlockForm');
-  //   } else if(!eng.test(username)) {
-  //     setUsernameError('only ENGLISH');
-  //     setErrorBlockForm('errorBlockForm');
-    } else {
+    } else if(!testLetters.test(username)) {
+      setUsernameError('only ENGLISH');
+      setErrorBlockForm('errorBlockForm');
+    }
+    else {
       setUsernameError('');
       setErrorBlockForm('errorBlockFormNo');
     }
-  }, [username]);
+  }, [username, testNumbers, testLetters]);
 
   function onChangeEmail(event : any) {
     setEmail(event.target.value);
   }
 
-  // useEffect(() => {
-  //   if(validator.isEmail(email)) {
-  //     setEmailError('');
-  //     setErrorBlockForm('errorBlockFormNo');
-  //   } else {
-  //     setEmailError('Email should looks like "example1@gmail.com"');
-  //     setErrorBlockForm('errorBlockForm');
-  //   }
-  // }, [email]);
+  useEffect(() => {
+    if(!emailTestString.test(email)) {
+      setEmailError('Email should looks like "example1@gmail.com"');
+      setErrorBlockForm('errorBlockForm');
+    } else {
+      setEmailError('');
+      setErrorBlockForm('errorBlockFormNo');
+    }
+  }, [email, emailTestString]);
 
   function onChangePhone(event : any) {
     setPhone(event.target.value);
   }
 
-  // useEffect(() => {
-  //   if(validator.isMobilePhone(phone)) {
-  //     setPhoneError('');
-  //     setErrorBlockForm('errorBlockFormNo');
-  //   } else {
-  //     setPhoneError('Phone NUMBER should looks like "+380112881884" without plus');
-  //     setErrorBlockForm('errorBlockForm');
-  //   }
-  //   for(let i = 0; i < phone.length; i++) {
-  //     if(phone[i] === '+') {
-  //       setPhoneError('Phone NUMBER should looks like "+380112881884" without plus');
-  //       setErrorBlockForm('errorBlockForm');
-  //     }
-  //   }
-  // }, [phone]);
+  useEffect(() => {
+    if(testNumbers.test(phone) && phone.length >= 7 && phone.length <= 16 && !testLetters.test(phone)) {
+      setPhoneError('');
+      setErrorBlockForm('errorBlockFormNo');
+    } else {
+      setPhoneError('Phone NUMBER should looks like "+380112881884" without plus');
+      setErrorBlockForm('errorBlockForm');
+    }
+    for(let i = 0; i < phone.length; i++) {
+      if(phone[i] === '+') {
+        setPhoneError('Phone NUMBER should looks like "+380112881884" without plus');
+        setErrorBlockForm('errorBlockForm');
+      }
+    }
+  }, [phone, testNumbers, testLetters]);
 
   function onChangePassword(event : any) {
     setPassword(event.target.value);
   }
 
-  // useEffect(() => {
-  //   if(passValOptions.validate(password)) {
-  //     setPasswordError('');
-  //     setErrorBlockForm('errorBlockFormNo');
-  //   } else {
-  //     setPasswordError('Password length should be 8 - 18, has uppercase and lowercase letters and does not have spaces');
-  //     setErrorBlockForm('errorBlockForm');
-  //   }
-  // }, [password, passValOptions]);
+  useEffect(() => {
+    if(testLetters.test(password) && testNumbers.test(password) && password.length >= 6 && password.length <= 18) {
+      setPasswordError('');
+      setErrorBlockForm('errorBlockFormNo');
+    } else {
+      setPasswordError('Password length should be 8 - 18, has uppercase and lowercase letters and does not have spaces');
+      setErrorBlockForm('errorBlockForm');
+    }
+  }, [password, testNumbers, testLetters]);
 
   function onChangePasswordConfirm(event : any) {
     setPasswordConfirm(event.target.value);
